@@ -1,5 +1,7 @@
 <template>
-  <div id="mycharts" ref="myRef" class="com-page" />
+  <div class="com-container">
+    <div id="mycharts" ref="myRef" class="com-chart" />
+  </div>
 </template>
 
 <script lang="js">
@@ -45,15 +47,16 @@
       const seriesArr = showData.map((item, index) => {
         return {
           label: {
-            show: true,
             color: colorArrs[index][0],
+            formatter: function(){
+              return item.name + '\n\n' + item.sales
+          }
           },
           data: [
             {
               name: item.name + '\n\n' + item.sales,
               value: item.sales,
               itemStyle: {
-
                 color: new echarts.graphic.LinearGradient(0, 1, 0, 0,[
                   {
                     offset: 0,
@@ -86,7 +89,7 @@
   //屏幕适配
   function screenAdapter(){
     const titleFontSize = myRef.value.offsetWidth / 100 * 3.6
-    const innerRadius = titleFontSize * 2
+    const innerRadius = titleFontSize * 2.5
     const outterRadius = innerRadius * 1.125
     const adapterOption = {
       title: {
@@ -150,7 +153,7 @@
     }
 
   const initT = function(){
-    myChart = echarts.init(document.getElementById('mycharts'), 'chalk');
+    myChart = echarts.init(myRef.value, 'chalk');
     const centerPointers = [
       ['18%', '40%'],
       ['50%', '40%'],
@@ -171,8 +174,8 @@
         hoverAnimation: false,
         label: {
           show: true,
-          position: 'center'
-      },
+          position: 'center',
+        }, 
         labelLine: {
           show: false
         }
@@ -182,11 +185,11 @@
         center: centerPointers[1],
         hoverAnimation: false,
         label: {
-        show: true,
-        position: 'center'
+          show: true,
+          position: 'center'
         },
         labelLine: {
-        show: false
+          show: false
         }
       },
       {
@@ -194,11 +197,11 @@
         center: centerPointers[2],
         hoverAnimation: false,
         label: {
-        show: true,
-        position: 'center'
+          show: true,
+          position: 'center'
         },
         labelLine: {
-        show: false
+          show: false
         }
       },
       {
@@ -206,11 +209,11 @@
         center: centerPointers[3],
         hoverAnimation: false,
         label: {
-        show: true,
-        position: 'center'
+          show: true,
+          position: 'center'
         },
         labelLine: {
-        show: false
+          show: false
         }
       },
       {
@@ -218,11 +221,11 @@
         center: centerPointers[4],
         hoverAnimation: false,
         label: {
-        show: true,
-        position: 'center'
+          show: true,
+          position: 'center'
         },
         labelLine: {
-        show: false
+          show: false
         }
       }
       ]
@@ -250,6 +253,6 @@
   });
 </script>
 
-<style>
+<style lang='less' scoped>
 </style>
 

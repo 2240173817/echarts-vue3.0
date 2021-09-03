@@ -1,6 +1,6 @@
 <template>
   <div class="com-container" @dblclick="revertMap">
-    <div class="com-chart" id="mycharts" ref="myRef"></div>
+    <div class="com-page" id="mycharts" ref="myRef"></div>
   </div>
 </template>
 
@@ -88,7 +88,7 @@
   }
 
    const initT = async function(){
-      myChart = echarts.init(document.getElementById('mycharts'), 'chalk');
+      myChart = echarts.init(myRef.value, 'chalk');
       const res = await axios.get('http://localhost:8999/static/map/china.json')
       echarts.registerMap('china', res.data)
       const initOption = {
@@ -144,6 +144,6 @@
   });
 </script>
 
-<style>
+<style lang='less' scoped>
 </style>
 

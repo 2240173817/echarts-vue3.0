@@ -37,7 +37,7 @@
         
         
         const initT = function(){
-            myChart = echarts.init(document.getElementById('trend_ref'), 'chalk');
+            myChart = echarts.init(myRef.value, 'chalk');
             const initOption = {
                 grid:{
                     left: '3%',

@@ -1,9 +1,11 @@
 <template>
-  <div id="mycharts" ref="myRef" class="com-page" />
+  <div class="com-container">
+    <div id="mycharts" ref="myRef" class="com-page" />
+  </div>
 </template>
 
 <script lang="js">
-  import { defineComponent, getCurrentInstance, ref, onMounted } from 'vue';
+  import { defineComponent, getCurrentInstance, ref, onMounted, reactive} from 'vue';
   import * as echarts from "echarts";
   import '/public/static/theme/chalk.js'
 
@@ -17,6 +19,7 @@
       let currentPage = 1   //当前页数
       let totalPage = 0       //当前页 每页5条
       let timerId = null //定时器标识
+
       
     /* 获取数据 */  
    function getData(){
@@ -63,66 +66,12 @@
     })  
 
     myChart.setOption({ 
-      title:{
-        text: "▎商家销售统计",
-        textStyle:{
-          fontSize: 66,
-          color: "#fff"
-        },
-        left: 20,
-        top: 20
-      },
-      grid:{
-        top: '20%',
-        left: '3%',
-        right: '6%',
-        bottom: '3%',
-        containLabel: true
-      },
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'line',
-          z: 0,
-          lineStyle: {
-            width: 66,
-            color: '#2D3443'
-          }
-        }
-      },
-      xAxis: {
-        type: 'value',
-        /* max: allData[allData.length - 1].value */
-        },
       yAxis: {
-        type: 'category',
         data: sellerNames
       },
       series: [
         {
-          label: {
-            show: true,
-            position: 'right',
-            textStyle: {
-              color: '#fff'
-            }
-          },
-          barWidth: 66,
-          itemStyle: {
-            barBorderRadius: [0, 33, 33, 0],
-            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              {
-                offset: 0,
-                color: '#5052EE'
-              },
-              {
-                offset: 1,
-                color: '#AB6EE5'
-              }
-            ])
-          },
-          type: 'bar',
-          data: sellerValues
+          data: sellerValues,
         }
       ]
     })
@@ -158,7 +107,68 @@
   }
 
   const initT = function(){
-      myChart = echarts.init(document.getElementById('mycharts'), 'chalk');
+      myChart = echarts.init(myRef.value, 'chalk');
+      let initOption = {
+        title: {
+          text: '▎商家销售统计',
+          left: 20,
+          top: 20
+        },
+        grid: {
+          top: '20%',
+          left: '3%',
+          right: '6%',
+          bottom: '3%',
+          containLabel: true // 距离是包含坐标轴上的文字
+        },
+        xAxis: {
+          type: 'value'
+        },
+        yAxis: {
+          type: 'category'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line',
+            z: 0,
+            lineStyle: {
+              color: '#2D3443'
+            }
+          }
+        },
+        series: [
+          {
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'right',
+              textStyle: {
+                color: 'white'
+              }
+            },
+            itemStyle: {
+              barBorderRadius: [0, 33, 33, 0],
+              // 指明颜色渐变的方向
+              // 指明不同百分比之下颜色的值
+              color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                // 百分之0状态之下的颜色值
+                {
+                  offset: 0,
+                  color: '#5052EE'
+                },
+                // 百分之100状态之下的颜色值
+                {
+                  offset: 1,
+                  color: '#AB6EE5'
+                }
+              ])
+            }
+          }
+        ]
+      }
+      myChart.setOption(initOption)
+
       //鼠标事件
       myChart.on('mouseover', ()=>{
         clearInterval(timerId)
@@ -172,6 +182,7 @@
   onMounted(() => {
     initT();
     getData();
+    screenAdapter()
     window.addEventListener('resize', screenAdapter)
   });
   return {
@@ -181,6 +192,6 @@
   });
 </script>
 
-<style>
+<style lang='less' scoped>
 </style>
 

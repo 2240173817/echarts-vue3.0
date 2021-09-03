@@ -122,7 +122,7 @@
   }
 
   const initT = function(){
-      myChart = echarts.init(document.getElementById('mycharts'), 'chalk');
+      myChart = echarts.init(myRef.value, 'chalk');
       const initOption = {
         title: {
           text: '▎ 热销商品销售金额占比统计',

@@ -1,5 +1,7 @@
 <template>
-  <div id="mycharts" ref="myRef" class="com-page" />
+  <div class="com-container">
+    <div id="mycharts" ref="myRef" class="com-page" />
+  </div>
 </template>
 
 <script lang="js">
@@ -125,7 +127,7 @@
   }
 
   const initT = function(){
-      myChart = echarts.init(document.getElementById('mycharts'), 'chalk');
+      myChart = echarts.init(myRef.value, 'chalk');
       const initOption = {
         title: {
           text: '▎ 地区销售排行',
@@ -150,7 +152,10 @@
         },
         series: [
           {
-            type: 'bar'
+            type: 'bar',
+             itemStyle: {
+              barBorderRadius: [20,20,0,0],
+            }
           }
         ]
       }
@@ -175,6 +180,6 @@
   });
 </script>
 
-<style>
+<style lang='less' scoped>
 </style>
 
