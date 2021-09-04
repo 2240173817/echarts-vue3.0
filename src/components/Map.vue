@@ -5,7 +5,7 @@
 </template>
 
 <script lang="js">
-  import { defineComponent, getCurrentInstance, ref, onMounted } from 'vue';
+  import { defineComponent, getCurrentInstance, ref, onMounted,onUnmounted } from 'vue';
   import * as echarts from "echarts";
   import '/public/static/theme/chalk.js'
   import axios from 'axios'
@@ -129,6 +129,9 @@
       myChart.setOption(initOption)
     }
 
+    onUnmounted(() => {
+        window.removeEventListener('resize', screenAdapter)
+    })
 
   onMounted(() => {
     initT();
@@ -138,7 +141,8 @@
   });
   return {
     myRef,
-    revertMap
+    revertMap,
+    screenAdapter
   };
     }
   });

@@ -176,7 +176,8 @@
     myRef,
     toLeft,
     toRight,
-    state
+    state,
+    screenAdapter 
   };
     }
   });

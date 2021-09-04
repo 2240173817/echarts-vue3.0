@@ -174,7 +174,8 @@
     /* window.addEventListener('resize', screenAdapter) */
   });
   return {
-    myRef
+    myRef,
+    screenAdapter
   };
     }
   });

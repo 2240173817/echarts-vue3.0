@@ -14,7 +14,7 @@
 </template>
 
 <script lang="js">
-  import { defineComponent, getCurrentInstance, ref, onMounted, computed, reactive} from 'vue';
+  import { defineComponent, getCurrentInstance, ref, onMounted, computed, reactive, onUnmounted} from 'vue';
   import * as echarts from "echarts";
   import '/public/static/theme/chalk.js'
 
@@ -215,15 +215,20 @@
     onMounted(() => {
         initT();
         getData();
-        window.addEventListener('resize', screenAdapter)
         screenAdapter()
+        window.addEventListener('resize', screenAdapter)
+        
     });
+    onUnmounted(() => {
+        window.removeEventListener('resize', screenAdapter)
+    })
         return{
             state,
             showChoice,
             myRef,
             handleSelect,
             showChoiceMethed,
+            screenAdapter
         }
       }
   })
