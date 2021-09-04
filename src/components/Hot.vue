@@ -8,13 +8,15 @@
 </template>
 
 <script lang="js">
-  import { defineComponent, getCurrentInstance, ref, onMounted, reactive, computed } from 'vue';
+  import { defineComponent, getCurrentInstance, ref, onMounted, reactive, computed,watch } from 'vue';
   import * as echarts from "echarts";
   import '/public/static/theme/chalk.js'
+  import { useStore } from "vuex";
 
   export default defineComponent({
     name: 'echarts',
     setup() {
+      let store = useStore()
       let myChart = null
       const { proxy } = getCurrentInstance()
       const myRef = ref(null)
@@ -122,7 +124,7 @@
   }
 
   const initT = function(){
-      myChart = echarts.init(myRef.value, 'chalk');
+      myChart = echarts.init(myRef.value, theme.value);
       const initOption = {
         title: {
           text: '▎ 热销商品销售金额占比统计',
@@ -165,6 +167,17 @@
       }
       myChart.setOption(initOption)
     }
+        const theme = computed( () =>{
+        return store.state.theme
+      }
+    )
+
+    watch(theme,() => {
+      myChart.dispose()
+      initT()
+      screenAdapter()
+      getData()
+    })
 
   onMounted(() => {
     initT();

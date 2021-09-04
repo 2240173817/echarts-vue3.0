@@ -1,6 +1,6 @@
 <template>
   <div class="com-container">
-      <div class="title" :style="state.comStyle">
+      <div class="title" :style="comStyle">
       <span>{{ '▎ ' +  state.showTitle}}</span>
       <span class="iconfont title-icon" :style="state.comStyle"  @click="showChoice.b = !showChoice.b">&#xe6eb;</span>
       <div class="select-con" v-if="showChoice.b" :style="state.marginStyle">
@@ -14,12 +14,15 @@
 </template>
 
 <script lang="js">
-  import { defineComponent, getCurrentInstance, ref, onMounted, computed, reactive, onUnmounted} from 'vue';
+  import { defineComponent, getCurrentInstance, ref, onMounted, computed, reactive, onUnmounted,watch} from 'vue';
   import * as echarts from "echarts";
   import '/public/static/theme/chalk.js'
+  import { useStore } from "vuex";
+  import { getThemeValue } from "@/utils/theme_utils";
 
   export default defineComponent({
       setup(){
+          let store = useStore()
         let myChart = null
         let allData = null
         const { proxy } = getCurrentInstance()
@@ -35,9 +38,31 @@
             name: "gyz"
         })
         
+            const theme = computed( () =>{
+        return store.state.theme
+      }
+    )
+
+    watch(theme,() => {
+      myChart.dispose()
+      initT()
+      screenAdapter()
+      getData()
+    })
+
+                // 设置给标题的样式
+        const comStyle = computed(() =>{
+
+                return {
+                    fontSize: titleFontSize.a + 'px',
+
+                    
+                }
+            
+        })
         
         const initT = function(){
-            myChart = echarts.init(myRef.value, 'chalk');
+            myChart = echarts.init(myRef.value, theme.value);
             const initOption = {
                 grid:{
                     left: '3%',
@@ -86,14 +111,7 @@
                 }
             })
 
-            // 设置给标题的样式
-        state.comStyle = computed({
-            get(){
-                return {
-                    fontSize: titleFontSize.a + 'px'
-                }
-            }
-        })
+
 
         state.marginStyle = computed({
             get(){
@@ -228,7 +246,8 @@
             myRef,
             handleSelect,
             showChoiceMethed,
-            screenAdapter
+            screenAdapter,
+            comStyle
         }
       }
   })

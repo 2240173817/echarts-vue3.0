@@ -5,9 +5,10 @@
 </template>
 
 <script lang="js">
-  import { defineComponent, getCurrentInstance, ref, onMounted, reactive} from 'vue';
+  import { defineComponent, getCurrentInstance, ref, onMounted, reactive, computed, watch} from 'vue';
   import * as echarts from "echarts";
-  import '/public/static/theme/chalk.js'
+
+  import { mapState,useStore } from 'vuex'
 
   export default defineComponent({
     name: 'echarts',
@@ -19,6 +20,20 @@
       let currentPage = 1   //当前页数
       let totalPage = 0       //当前页 每页5条
       let timerId = null //定时器标识
+      let store = useStore()
+
+    const theme = computed( () =>{
+        return store.state.theme
+      }
+    )
+
+    watch(theme,() => {
+      myChart.dispose()
+      initT()
+      screenAdapter()
+      getData()
+    })
+
 
       
     /* 获取数据 */  
@@ -77,6 +92,7 @@
     })
   }
 
+
   //屏幕适配
   function screenAdapter(){
     const titleFontSize = myRef.value.offsetWidth / 100 * 3.6
@@ -107,7 +123,8 @@
   }
 
   const initT = function(){
-      myChart = echarts.init(myRef.value, 'chalk');
+      myChart = echarts.init(myRef.value, theme.value);
+      console.log("ppp",theme)
       let initOption = {
         title: {
           text: '▎商家销售统计',

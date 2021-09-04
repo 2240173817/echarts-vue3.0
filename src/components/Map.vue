@@ -5,16 +5,18 @@
 </template>
 
 <script lang="js">
-  import { defineComponent, getCurrentInstance, ref, onMounted,onUnmounted } from 'vue';
+  import { defineComponent, getCurrentInstance, ref, onMounted,onUnmounted,watch,computed } from 'vue';
   import * as echarts from "echarts";
   import '/public/static/theme/chalk.js'
   import axios from 'axios'
   import { getProvinceMapInfo } from '@/utils/map_utils'
+  import { useStore } from "vuex";
 
 
   export default defineComponent({
     name: 'echarts',
     setup() {
+      let store = useStore()
       let myChart = null
       const { proxy } = getCurrentInstance()
       const myRef = ref(null)
@@ -88,7 +90,7 @@
   }
 
    const initT = async function(){
-      myChart = echarts.init(myRef.value, 'chalk');
+      myChart = echarts.init(myRef.value, theme.value);
       const res = await axios.get('http://localhost:8999/static/map/china.json')
       echarts.registerMap('china', res.data)
       const initOption = {
@@ -128,6 +130,17 @@
 
       myChart.setOption(initOption)
     }
+        const theme = computed( () =>{
+        return store.state.theme
+      }
+    )
+
+    watch(theme,() => {
+      myChart.dispose()
+      initT()
+      screenAdapter()
+      getData()
+    })
 
     onUnmounted(() => {
         window.removeEventListener('resize', screenAdapter)

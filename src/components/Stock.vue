@@ -5,13 +5,15 @@
 </template>
 
 <script lang="js">
-  import { defineComponent, getCurrentInstance, ref, onMounted } from 'vue';
+  import { defineComponent, getCurrentInstance, ref, onMounted ,watch,computed} from 'vue';
   import * as echarts from "echarts";
   import '/public/static/theme/chalk.js'
+  import { useStore } from "vuex";
 
   export default defineComponent({
     name: 'echarts',
     setup() {
+      let store = useStore()
       let myChart = null
       const { proxy } = getCurrentInstance()
       const myRef = ref(null)
@@ -153,7 +155,7 @@
     }
 
   const initT = function(){
-    myChart = echarts.init(myRef.value, 'chalk');
+    myChart = echarts.init(myRef.value, theme.value);
     const centerPointers = [
       ['18%', '40%'],
       ['50%', '40%'],
@@ -238,6 +240,18 @@
       startInterval()
     })
   }
+
+      const theme = computed( () =>{
+        return store.state.theme
+      }
+    )
+
+    watch(theme,() => {
+      myChart.dispose()
+      initT()
+      screenAdapter()
+      getData()
+    })
 
 
   onMounted(() => {

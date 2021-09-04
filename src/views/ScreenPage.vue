@@ -1,15 +1,15 @@
 <template>
-  <div class="screen-container">
+  <div class="screen-container" :style="containerStyle">
     <header class="screen-header">
       <div>
-        <img src="/static/img/header_border_dark.png" alt />
+        <img :src="borderSrc" alt />
       </div>
       <span class="logo">
-        <img src="/static/img/logo_dark.png" alt />
+        <img :src="logoSrc" alt />
       </span>
       <span class="title">电商平台实时监控系统</span>
       <div class="title-right">
-        <img src="/static/img/qiehuan_dark.png" class="qiehuan" />
+        <img :src="themeSrc" class="qiehuan" @click="changeTheme" />
         <span class="datetime">2049-01-01 00:00:00</span>
       </div>
     </header>
@@ -98,7 +98,7 @@ import Seller from "@/components/Seller.vue";
 import Stock from "@/components/Stock.vue";
 import Trend from "@/components/Trend.vue";
 
-import { mapState } from "vuex";
+import { useStore } from "vuex";
 import {
   defineComponent,
   getCurrentInstance,
@@ -108,6 +108,7 @@ import {
   nextTick,
   reactive,
 } from "vue";
+import { getThemeValue } from "@/utils/theme_utils";
 
 export default defineComponent({
   name: "ScreenPage",
@@ -133,6 +134,30 @@ export default defineComponent({
       rank: false,
       hot: false,
       stock: false,
+    });
+    const store = useStore();
+
+    const containerStyle = computed(() => {
+      let theme = store.state.theme;
+      return {
+        backgroundColor: getThemeValue(theme).backgroundColor,
+        color: getThemeValue(theme).titleColor,
+      };
+    });
+
+    const borderSrc = computed(() => {
+      let theme = store.state.theme;
+      return "/static/img/" + getThemeValue(theme).headerBorderSrc;
+    });
+
+    const logoSrc = computed(() => {
+      let theme = store.state.theme;
+      return "/static/img/" + getThemeValue(theme).logoSrc;
+    });
+
+    const themeSrc = computed(() => {
+      let theme = store.state.theme;
+      return "/static/img/" + getThemeValue(theme).themeSrc;
     });
 
     function changeSize(chartName) {
@@ -177,6 +202,10 @@ export default defineComponent({
       }
     }
 
+    function changeTheme() {
+      store.commit("changeTheme");
+    }
+
     return {
       fullScreenStatus,
       changeSize,
@@ -186,6 +215,11 @@ export default defineComponent({
       seller,
       stock,
       rank,
+      changeTheme,
+      containerStyle,
+      borderSrc,
+      logoSrc,
+      themeSrc,
     };
   },
 });
