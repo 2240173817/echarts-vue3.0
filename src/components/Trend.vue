@@ -1,12 +1,19 @@
 <template>
   <div class="com-container">
-      <div class="title" :style="comStyle">
-      <span>{{ '▎ ' +  state.showTitle}}</span>
-      <span class="iconfont title-icon" :style="state.comStyle"  @click="showChoice.b = !showChoice.b">&#xe6eb;</span>
+    <div class="title" :style="state.comStyle">
+      <span>{{ '▎ ' + state.showTitle}}</span>
+      <span
+        class="iconfont title-icon"
+        :style="state.comStyle"
+        @click="showChoice.b = !showChoice.b"
+      >&#xe6eb;</span>
       <div class="select-con" v-if="showChoice.b" :style="state.marginStyle">
-        <div class="select-item" v-for="item in state.selectTypes" :key="item.key" @click="handleSelect(item.key)">
-          {{ item.text }}
-        </div>
+        <div
+          class="select-item"
+          v-for="item in state.selectTypes"
+          :key="item.key"
+          @click="handleSelect(item.key)"
+        >{{ item.text }}</div>
       </div>
     </div>
     <div class="com-chart" ref="myRef" id="trend_ref"></div>
@@ -38,27 +45,46 @@
             name: "gyz"
         })
         
-            const theme = computed( () =>{
-        return store.state.theme
-      }
-    )
+        const theme = computed( () =>{
+            return store.state.theme
+            }
+        )
 
-    watch(theme,() => {
-      myChart.dispose()
-      initT()
-      screenAdapter()
-      getData()
-    })
+        watch(theme,() => {
+        myChart.dispose()
+        initT()
+        screenAdapter()
+        getData()
+        })
 
-                // 设置给标题的样式
-        const comStyle = computed(() =>{
+        // 设置给标题的样式
+        state.comStyle = computed(() =>{
+            const theme = store.state.theme
+            return {
+                fontSize: titleFontSize.a + 'px',  
+                color: getThemeValue(theme).titleColor   
+            }    
+        })
 
-                return {
-                    fontSize: titleFontSize.a + 'px',
+        state.marginStyle = computed(() =>{
+            const theme = store.state.theme
+            return {
+                marginLeft: titleFontSize + 'px',
+                backgroundColor: getThemeValue(theme).backgroundColor,
+                color: getThemeValue(theme).titleColor
+            }
+        })
 
-                    
-                }
-            
+         state.selectTypes = computed(() =>{
+
+            if(!allData){
+                return []
+            }else{
+                return allData.type.filter(item => {
+                    return item.key !== choiceType
+                })
+            }
+
         })
         
         const initT = function(){
@@ -99,40 +125,16 @@
         }
 
         function updateChart(){
-            state.selectTypes = computed({
-                get(){
-                    if(!allData){
-                        return []
-                    }else{
-                        return allData.type.filter(item => {
-                            return item.key !== choiceType
-                        })
-                    }
-                }
-            })
-
-
-
-        state.marginStyle = computed({
-            get(){
-                return {
-                    marginLeft: titleFontSize + 'px'
-                }
-            }
-
-        })
-
-        state.showTitle = computed({
-            get(){
+        state.showTitle = computed(() =>{
+                console.log(allData,"lll")
                 if(!allData){
                     return ''
                 }
-                else{
+                else{                  
                     return allData[choiceType].title
                 }
-            }
-
             })
+
              // 半透明的颜色值
             const colorArr1 = [
                 'rgba(11, 168, 44, 0.5)',
@@ -247,7 +249,7 @@
             handleSelect,
             showChoiceMethed,
             screenAdapter,
-            comStyle
+
         }
       }
   })
